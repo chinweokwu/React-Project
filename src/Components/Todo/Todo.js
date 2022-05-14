@@ -5,7 +5,7 @@ const TodoApp = () => {
     const savedTodos = localStorage.getItem("todos")
       if(savedTodos) {
         return JSON.parse(savedTodos)
-      }else {
+      } else {
         return []
       }
     }
@@ -28,7 +28,6 @@ const TodoApp = () => {
 
   const handleEditInputChange = (e) => {
     setCurrentTodo({ ...currentTodo, task: e.target.value });
-    console.log(currentTodo);
   }
 
   const handleUpdateTodo = (id, updatedTodo) => {
@@ -39,14 +38,27 @@ const TodoApp = () => {
     setTodos(updatedItem);
   }
 
-    const handleEditFormSubmit = (e) => {
+  const handleEditFormSubmit = (e) => {
     e.preventDefault();
     handleUpdateTodo(currentTodo.id, currentTodo);
   }
-  function handleEditClick(todo) {
+
+  const handleEditClick = (todo) =>{
     setIsEditing(true);
     setCurrentTodo({ ...todo });
   }
+
+  // const completeTask = e => {
+  //   const element = todos.findIndex((el) => el.id === e.target.id);
+
+  //   const newToDos = [...todos];
+  //       newToDos[element] = {
+  //     ...newToDos[element],
+  //     completed: !newToDos[element].completed
+  //   };
+  //   setTodos(newToDos);
+  // };
+
   const handleChange = (e) => {
     setValue(e.target.value)
   }
@@ -54,7 +66,7 @@ const TodoApp = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if(value !== "") {
-        setTodos([...todos, {id: todos.length + 1, task: value.trim()}])
+      setTodos([...todos, { task: value.trim(), completed: false}])
     }
     setValue("");
   }
@@ -62,19 +74,19 @@ const TodoApp = () => {
   return (
       <div>
          {isEditing ? (
-        <form onSubmit={handleEditFormSubmit}>
-          <h2>Edit Todo</h2>
-          <label htmlFor="editTodo">Edit todo: </label>
-          <input
-            type="text"
-            placeholder="Edit todo"
-            value={currentTodo.task}
-            onChange={handleEditInputChange}
-          />
-          <button type="submit">Update</button>
-          <button onClick={() => setIsEditing(false)}>Cancel</button>
-        </form>
-      ) : (
+          <form onSubmit={handleEditFormSubmit}>
+            <h2>Edit Todo</h2>
+            <label htmlFor="editTodo">Edit todo: </label>
+            <input
+              type="text"
+              placeholder="Edit todo"
+              value={currentTodo.task}
+              onChange={handleEditInputChange}
+            />
+            <button type="submit">Update</button>
+            <button onClick={() => setIsEditing(false)}>Cancel</button>
+          </form>
+        ) : (
         <form onSubmit={handleSubmit}>
           <h2>Add Todo</h2>
           <label htmlFor="todo">Add todo: </label>
@@ -89,12 +101,15 @@ const TodoApp = () => {
       )}
         <ul>
           {
-            todos.map(todo => (
-              <li key={todo.id}>
+            todos.map((todo) => (
+              <li 
+                key={todo.id}
+                style={{ textDecoration: todo.completed ? "line-through" : "" }}
+              >
                 {todo.task}
                 <button onClick={() => handleEditClick(todo)}>Edit</button>
-                <button type="submit" onClick={() => handleDelete(todo.id)}>delete</button>
-                
+                <button onClick={() => handleDelete(todo.id)}>delete</button>
+                {/* <button onClick={(e) => completeTask(e)}>Complete</button> */}
               </li>
             ))
           }
